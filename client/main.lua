@@ -2,6 +2,7 @@ local bags = 0
 local bagsTaken = {}
 local bagProp = nil
 local jobVehicle = nil
+local blip = nil
 local isHoldingBag = false
 local isOnDuty = false
 
@@ -15,7 +16,7 @@ CreateThread(function()
     if Config.Blip.Show then
         if Config.RequireJob then
             if ESX.PlayerData.job.name == Config.Job then
-                local blip = AddBlipForCoord(Config.JobClock)
+                blip = AddBlipForCoord(Config.JobClock)
 
                 SetBlipSprite(blip, Config.Blip.Sprite)
                 SetBlipScale(blip, Config.Blip.Scale)
@@ -27,7 +28,7 @@ CreateThread(function()
                 EndTextCommandSetBlipName(blip)
             end
         else
-            local blip = AddBlipForCoord(Config.JobClock)
+            blip = AddBlipForCoord(Config.JobClock)
 
             SetBlipSprite(blip, Config.Blip.Sprite)
             SetBlipScale(blip, Config.Blip.Scale)
@@ -37,6 +38,27 @@ CreateThread(function()
             BeginTextCommandSetBlipName('STRING')
             AddTextComponentSubstringPlayerName('Garbage Job')
             EndTextCommandSetBlipName(blip)
+        end
+    end
+end)
+
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function(job)
+    if Config.RequireJob then
+        if job.name == 'garbage' and blip == nil then
+            blip = AddBlipForCoord(Config.JobClock)
+
+            SetBlipSprite(blip, Config.Blip.Sprite)
+            SetBlipScale(blip, Config.Blip.Scale)
+            SetBlipColour(blip, Config.Blip.Color)
+            SetBlipAsShortRange(blip, true)
+
+            BeginTextCommandSetBlipName('STRING')
+            AddTextComponentSubstringPlayerName('Garbage Job')
+            EndTextCommandSetBlipName(blip)
+        elseif job.name ~= 'garbage' and blip ~= nil then
+            RemoveBlip(blip)
+            blip = nil
         end
     end
 end)
@@ -95,7 +117,7 @@ exports.ox_target:addGlobalVehicle({
 
 exports.ox_target:addSphereZone({
     coords = Config.JobClock,
-    radius = 0.5,
+    radius = 1.0,
     debug = false,
     options = {
         {
