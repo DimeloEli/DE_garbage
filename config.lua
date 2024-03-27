@@ -5,7 +5,7 @@ Config.Notify = 'ox' -- 'ox'/'esx'/'other'
 Config.Progress = 'circle' -- 'circle'/'bar'
 
 -- Model Config
-Config.Models = {'prop_dumpster_01a'}
+Config.Models = {'prop_dumpster_01a', 'prop_dumpster_02a', 'prop_dumpster_02b'}
 
 -- Job Config
 Config.RequireJob = false
